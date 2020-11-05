@@ -868,6 +868,7 @@ def graficartabla() :
                     for lk in listacolumna:
                         MapaRuta.write("<td  bgcolor="+quotes+defectotablac+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
                         print("<td  bgcolor="+quotes+color+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
+                    listacolumna=[]
                 elif (obj.id.casefold()==";"):
                     print("</tr>" + "\n")
                     MapaRuta.write("</tr>" + "\n")
