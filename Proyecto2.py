@@ -678,7 +678,7 @@ def graficarlista():
                                 reversa=[]
                         MapaRuta.write('}')
                         MapaRuta.close()
-                        os.system("dot -Tpdf "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".dot -o "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".pdf")
+                        os.system("dot -Tsvg "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".dot -o "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".svg")
                         lis1=lis1+1
                         anterior=""
                         estado=0
@@ -819,7 +819,7 @@ def graficartabla() :
                     MapaRuta.write("</table>>];" + "\n")
                     MapaRuta.write('}')
                     MapaRuta.close()
-                    os.system("dot -Tpdf "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".txt -o "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".pdf")
+                    os.system("dot -Tsvg "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".txt -o "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".svg")
                     lis1=lis1+1
                     conti=conti+1
                     estado=0
