@@ -405,6 +405,7 @@ def sintactico():
             elif (obj.id.casefold()=="defecto"):
                 estado=36
             elif(obj.id.casefold()=="encabezados"):
+                listaencabezado.append(encabezado("#"))
                 estado=34
             
         elif (estado==32):
@@ -799,6 +800,7 @@ def graficartabla() :
     lis1=1 
     quotes='"'
     contador=0
+    conti=1
     nombre=""
     color=""
     if listatabla==[]:
@@ -819,6 +821,7 @@ def graficartabla() :
                     MapaRuta.close()
                     os.system("dot -Tpdf "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".txt -o "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".pdf")
                     lis1=lis1+1
+                    conti=conti+1
                     estado=0
                 elif (obj.id.casefold()=="nombre"):
                     MapaRuta.write("label="+quotes+obj.lexem+quotes+"; fontsize=100; graph [bgcolor=skyblue];" + "\n")
@@ -848,6 +851,7 @@ def graficartabla() :
                         estado=22
                         MapaRuta.write("<tr>" + "\n")
                         print("<tr>" + "\n")
+                        
                         contador=0
                     else:
                         while contador<numerocolumna:
@@ -860,11 +864,15 @@ def graficartabla() :
             elif (estado==22):            
                 if (obj.id.casefold()=="color"):
                     color=obj.lexem
+                    MapaRuta.write("<td  bgcolor="+quotes+color+quotes+"><i>"+str(conti)+"</i></td>" + "\n")
+                    conti=conti+1
                     for lk in listacolumna:
                         MapaRuta.write("<td  bgcolor="+quotes+color+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
                         print("<td  bgcolor="+quotes+color+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
                     listacolumna=[]
                 elif (obj.id.casefold()=="#"):
+                    MapaRuta.write("<td  bgcolor="+quotes+defectotablac+quotes+"><i>"+str(conti)+"</i></td>" + "\n")
+                    conti=conti+1
                     for lk in listacolumna:
                         MapaRuta.write("<td  bgcolor="+quotes+defectotablac+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
                         print("<td  bgcolor="+quotes+color+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
