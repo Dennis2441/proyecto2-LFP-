@@ -53,7 +53,6 @@ def analizar(cadena):
     ff=1 #filas
     cc=0 #columnas
     n1=1
-    
     for i in range(len(cadena)):
         char = cadena[i]
                 
@@ -367,7 +366,7 @@ def sintactico():
                 elif (tipo.casefold()=="tabla"):
                     estado=12
                 elif (tipo.casefold()=="matriz"):
-                    estado=4
+                    estado=0
         elif (estado==12):
             if (obj.id.casefold()=="numero"):
                 #listatabla.append(graficat("numero",obj.lexem))
