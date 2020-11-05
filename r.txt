@@ -7,7 +7,7 @@ encabezados ('Equipo','Color Asignado','No. Integrantes') amarillo2;
 fila (#)#; //Tendrá los valores por defecto
 } defecto ('---') gris2;
 
-lista ('>>> Personas <<<',circulo,verdadero){
+lista  ('>>> Personas <<<',circulo,verdadero){
 nodo ('Luis') azul2 ;
 nodos (2, 'Persona') verde2;
 nodo (#) #; // Nodo con valores por defecto
@@ -20,3 +20,4 @@ nodos (2, 'person') verde2;
 nodo (#) #; // Nodo con valores por defecto
 nodo ('Manuel') rojo2;
 } defecto ('Disponible') blanco;
+

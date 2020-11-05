@@ -1,16 +1,8 @@
-import os
-import pydot
-MapaRuta = open(r"C:\Users\denni\OneDrive\Desktop\example.dot", 'w')
-hola="digraph grafica{ rankdir=TB; node [shape = record, style=filled, fillcolor=seashell2];  nodo123 ; nodo124:C0->nodo123 nodo126 ; nodo125 ; nodo126:C0->nodo125 nodo127 ; nodo126:C1->nodo127 nodo124:C1->nodo126 }"
-MapaRuta.write(hola)
-MapaRuta.close()
-#(graph,)=pydot.graph_from_dot_file(r"C:\Users\denni\OneDrive\Desktop\example.dot")
-os.system("dot -Tpng "r"C:\Users\denni\OneDrive\Desktop\lista1.dot -o "r"C:\Users\denni\OneDrive\Desktop\lista1.png")
-#graph.Tpng(r"C:\Users\denni\OneDrive\Desktop\example.png")
 import pandas as pd
 import numpy as np
 import webbrowser
 import os
+from glob import glob
 
 lista_tokens = []
 listalista=[]
@@ -18,11 +10,13 @@ listamatriz=[]
 listatabla=[]
 listaencabezado=[]
 numerocolumna=0
+listacolumna=[]
 defectonombre=""
 defectocolor=""
 defectotabla=""
 defectotablac=""
 colortabla=""
+reportegrafica=[]
 class token:
     def __init__ (self, id, lexem, row, column,descripcion):
         self.id = id
@@ -48,17 +42,24 @@ class nombreslista:
 class encabezado:
     def __init__ (self, lexem):
         self.lexem = lexem
+class columni:
+    def __init__ (self, lexem):
+        self.lexem = lexem
+class reporte:
+    def __init__ (self, lexem):
+        self.lexem = lexem
         
 
 def analizar(cadena):
     estado = 0
+    global lista_tokens
     char = '' #caracter actual
     next_char = '' #caracter siguiente
     lexema = ""
     ff=1 #filas
     cc=0 #columnas
     n1=1
-    
+    lista_tokens=[]
     for i in range(len(cadena)):
         char = cadena[i]
                 
@@ -334,6 +335,7 @@ def sintactico():
     global colortabla
     global defectotabla
     global defectotablac
+    mat1=0
     for obj in lista_tokens: 
         print(obj.id, estado)   
         if (estado==0):
@@ -371,10 +373,10 @@ def sintactico():
                 elif (tipo.casefold()=="tabla"):
                     estado=12
                 elif (tipo.casefold()=="matriz"):
-                    estado=4
+                    estado=0
         elif (estado==12):
             if (obj.id.casefold()=="numero"):
-                listatabla.append(graficat("numero",obj.lexem))
+                #listatabla.append(graficat("numero",obj.lexem))
                 numerocolumna=int(obj.lexem)  
                 estado=12
             elif (obj.id.casefold()==","):
@@ -395,9 +397,13 @@ def sintactico():
         elif (estado==3):
             if (obj.id.casefold()=="{"):
                 estado=31
-                #listatabla.append(graficat("tabla",obj.lexem))  
+                #listatabla.append(graficat("tabla",obj.lexem)) 
+            elif (obj.id.casefold()==")"):
+                    
+                    estado=3 
             else:
                 lista_tokens.append(token("error",obj.id,obj.row,obj.column,"No se esperaba: "+obj.id+",Se esperaba {"))
+                estado=0
         elif (estado==31):
             if (obj.id.casefold()=="fila"):
                 listatabla.append(graficat("fila",obj.lexem)) 
@@ -405,6 +411,7 @@ def sintactico():
             elif (obj.id.casefold()=="defecto"):
                 estado=36
             elif(obj.id.casefold()=="encabezados"):
+                listaencabezado.append(encabezado("#"))
                 estado=34
             
         elif (estado==32):
@@ -412,7 +419,7 @@ def sintactico():
             if (obj.id.casefold()=="("):
                 estado==32
             elif (obj.id.casefold()=="nombre"):
-                listatabla.append(graficat("tabla",obj.lexem)) 
+                listatabla.append(graficat("nombre",obj.lexem)) 
             elif (obj.id.casefold()==","):      
                 estado=32
             elif (obj.id=="#"):
@@ -445,7 +452,7 @@ def sintactico():
                 listatabla.append(graficat("#",obj.lexem))
                 estado=34 
             elif (obj.id.casefold()==")"):
-                listatabla.append(graficat(")",obj.lexem)) 
+                
                 estado=35      
             else:
                 lista_tokens.append(token("error",obj.id,obj.row,obj.column,"No se esperaba: "+obj.id+",Se esperaba en encabezado  'nombre' o ',' o ')' o '('"))
@@ -455,28 +462,27 @@ def sintactico():
             elif (obj.id=="#"):
                 listatabla.append(graficat("#",obj.lexem))
             elif (obj.id.casefold()==";"):
-                listatabla.append(graficat(";",obj.lexem))
+                
                 estado=31
             else:
                 lista_tokens.append(token("error",obj.id,obj.row,obj.column,"No se esperaba: "+obj.id+",Se esperaba en fila color o ; "))
+                estado=0
         elif (estado==36):
             if (obj.id.casefold()=="("):
-                estado=26
+                estado=36
             elif (obj.id.casefold()=="nombre"):
-                listatabla.append(graficat("nombre",obj.lexem))
                 defectotabla=obj.lexem
-                estado=26
+                estado=36
             elif (obj.id.casefold()==")"):
-                estado=27
+                estado=37
             else:
                 lista_tokens.append(token("error",obj.id,obj.row,obj.column,"No se esperaba: "+obj.id+""))
         elif (estado==37):
             if (obj.id.casefold()=="color"):
-                listatabla.append(graficat("color",obj.lexem))
                 defectotablac=obj.lexem
-                estado=27
+                estado=37
             elif (obj.id.casefold()==";"):
-                listatabla.append(graficat("color",obj.lexem))
+                listatabla.append(graficat(";",obj.lexem))
                 estado=0
             else:
                 lista_tokens.append(token("error",obj.id,obj.row,obj.column,"No se esperaba: "+obj.id+""))      
@@ -635,6 +641,7 @@ def graficarlista():
     doble=""
     global defectonombre
     global defectocolor
+    global reportegrafica
     lista=""
     print(lista)
     if listalista==[]:
@@ -648,6 +655,7 @@ def graficarlista():
                 MapaRuta.write('digraph {' + "\n")
                 MapaRuta.write('rankdir = LR;' + "\n")
                 lista="lista"+str(lis1)
+                reportegrafica.append(reporte(lista))
                 estado=1
             elif (estado==1):
                 if (obj.id.casefold()==";"):
@@ -656,6 +664,10 @@ def graficarlista():
                         MapaRuta.close()
                         os.system("dot -Tpdf "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".dot -o "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".pdf")
                         lis1=lis1+1
+                        nombres=[]
+                        reversa=[]
+                        nombre=""
+                        anterior=""
                         estado=0
                     elif (doble.casefold()=="verdadero"):
                         reversa.reverse()
@@ -670,10 +682,13 @@ def graficarlista():
                                 MapaRuta.write(anterior+"->"+nombre+ "\n")
                                 anterior=nombre
                                 nombre=""
+                                nombres=[]
+                                reversa=[]
                         MapaRuta.write('}')
                         MapaRuta.close()
-                        os.system("dot -Tpdf "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".dot -o "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".pdf")
+                        os.system("dot -Tsvg "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".dot -o "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".svg")
                         lis1=lis1+1
+                        anterior=""
                         estado=0
                 elif (obj.id.casefold()=="nombre"):
                     MapaRuta.write("label="+quotes+obj.lexem+quotes+";" + "\n")
@@ -788,37 +803,135 @@ def graficartabla() :
     estado=0
     global defectotabla
     global defectotablac
-    list=1 
-    quotes=""
-    if listatabla==[]
+    global numerocolumna
+    global listacolumna
+    global reportegrafica
+    lis1=1 
+    quotes='"'
+    contador=0
+    conti=1
+    nombre=""
+    color=""
+    if listatabla==[]:
         print("No se ha Cargado Ningun Archivo")
     else:
         for obj in listatabla:
             print(obj.lexem,obj.id)
             if (estado==0):
-                lista="lista"+str(lis1)
-                MapaRuta = open(r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".dot", 'w')
+                MapaRuta = open(r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".txt", 'w')
                 MapaRuta.write('digraph {' + "\n")
                 MapaRuta.write('rankdir = LR;' + "\n")
-                lista="lista"+str(lis1)
+                lista="tabla"+str(lis1)
+                reportegrafica.append(reporte(lista))
                 estado=1
             elif (estado==1):
                 if (obj.id.casefold()==";"):
                     MapaRuta.write("</table>>];" + "\n")
                     MapaRuta.write('}')
                     MapaRuta.close()
-                    os.system("dot -Tpdf "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".dot -o "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".pdf")
+                    os.system("dot -Tsvg "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".txt -o "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".svg")
                     lis1=lis1+1
+                    conti=conti+1
                     estado=0
                 elif (obj.id.casefold()=="nombre"):
                     MapaRuta.write("label="+quotes+obj.lexem+quotes+"; fontsize=100; graph [bgcolor=skyblue];" + "\n")
                     MapaRuta.write("Foo [label=<" + "\n")
                     #bgcolor
-                    MapaRuta.write("<table border="+quotes+"0"+quotes+"cellborder="+quotes+"1"+quotes +" cellspacing="+quotes+"0"+quotes+">"+ "\n")
+                    
+                    MapaRuta.write("<table border="+quotes+"0"+quotes+" cellborder="+quotes+"1"+quotes +" cellspacing="+quotes+"0"+quotes+">"+ "\n")
+                    
                     MapaRuta.write("<tr>" + "\n")
+                    
                     for jk in listaencabezado:
-                        MapaRuta.write("<td  bgcolor="+quotes+colortabla+quotes+"><i>"+jk.lexem+"</i></td>" + "\n")
+                        MapaRuta.write("<td bgcolor="+quotes+colortabla+quotes+">"+jk.lexem+"</td>" + "\n")
                     MapaRuta.write("</tr>" + "\n")
+                elif (obj.id.casefold()=="encabezados"):
+                    print("")
+                elif (obj.id.casefold()=="fila"):
+                    estado=2
+            elif (estado==2):
+                if (obj.id.casefold()=="nombre"):
+                    listacolumna.append(columni(obj.lexem))
+                    contador=contador+1
+                elif (obj.id.casefold()=="#"):
+                    listacolumna.append(columni(defectotabla))
+                    contador=contador+1
+                elif (obj.id.casefold()==")"):
+                    if (contador==numerocolumna):
+                        estado=22
+                        MapaRuta.write("<tr>" + "\n")
+                        print("<tr>" + "\n")
+                        
+                        contador=0
+                    else:
+                        while contador<numerocolumna:
+                            listacolumna.append(columni(defectotabla))
+                            contador=contador+1
+                        contador=0
+                        estado=22
+                        MapaRuta.write("<tr>" + "\n")
+                        print("<tr>" + "\n")
+            elif (estado==22):            
+                if (obj.id.casefold()=="color"):
+                    color=obj.lexem
+                    MapaRuta.write("<td  bgcolor="+quotes+color+quotes+"><i>"+str(conti)+"</i></td>" + "\n")
+                    conti=conti+1
+                    for lk in listacolumna:
+                        MapaRuta.write("<td  bgcolor="+quotes+color+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
+                        print("<td  bgcolor="+quotes+color+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
+                    listacolumna=[]
+                elif (obj.id.casefold()=="#"):
+                    MapaRuta.write("<td  bgcolor="+quotes+defectotablac+quotes+"><i>"+str(conti)+"</i></td>" + "\n")
+                    conti=conti+1
+                    for lk in listacolumna:
+                        MapaRuta.write("<td  bgcolor="+quotes+defectotablac+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
+                        print("<td  bgcolor="+quotes+color+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
+                    listacolumna=[]
+                elif (obj.id.casefold()==";"):
+                    print("</tr>" + "\n")
+                    MapaRuta.write("</tr>" + "\n")
+                    estado=1
+def reporteg():
+    print("")
+    listale=[]
+    template = ""
+    quo='"'
+    i=""
+    contadorl=1
+    contadort=1
+    tabla=""
+    lista=""
+    for obj in reportegrafica:
+        tabla="tabla"+str(contadort)
+        lista="lista"+str(contadorl)
+        print()
+        if (obj.lexem.casefold()==tabla):
+            i=r"C:\Users\denni\OneDrive\Desktop\tabla"+str(contadort)+".svg"
+            template+= f"<img src='{i}' style='width:50%; height:50%'>"+" "
+            contadort=contadort+1
+        elif (obj.lexem.casefold()==lista):
+            i=r"C:\Users\denni\OneDrive\Desktop\lista"+str(contadorl)+".svg"
+            template+= f"<img src='{i}' style='width:50%; height:50%'>"+" "
+            contadorl=contadorl+1
+
+    html = """<!DOCTYPE html>
+        <html>
+        <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <style>
+        </style>
+        <title></title>
+        </head>
+        <body> <h1 align="center">Reporte de Graficas</h1>"""+template+"""
+        </body>
+        </html>"""
+
+    print(html)
+    with open(r'C:\Users\denni\OneDrive\Desktop\reportegrafica.html', "w") as file:
+        file.write(html)
+    os.startfile(r'C:\Users\denni\OneDrive\Desktop\reportegrafica.html')
+
                          
 def opcion1():
     print("_______________________________________")
@@ -862,6 +975,8 @@ def main():
         elif opcion == 2: # GRAFICAR ARCHIVO   <
             print("_______________________________________")   
             graficarlista()
+            graficartabla() 
+            reporteg()
             main()
         elif opcion == 3: # GRAFICAR ARCHIVO   <
             print("BYE")

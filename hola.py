@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import webbrowser
 import os
-from glob import glob
 
 lista_tokens = []
 listalista=[]
@@ -16,7 +15,6 @@ defectocolor=""
 defectotabla=""
 defectotablac=""
 colortabla=""
-reportegrafica=[]
 class token:
     def __init__ (self, id, lexem, row, column,descripcion):
         self.id = id
@@ -43,9 +41,6 @@ class encabezado:
     def __init__ (self, lexem):
         self.lexem = lexem
 class columni:
-    def __init__ (self, lexem):
-        self.lexem = lexem
-class reporte:
     def __init__ (self, lexem):
         self.lexem = lexem
         
@@ -641,7 +636,6 @@ def graficarlista():
     doble=""
     global defectonombre
     global defectocolor
-    global reportegrafica
     lista=""
     print(lista)
     if listalista==[]:
@@ -655,7 +649,6 @@ def graficarlista():
                 MapaRuta.write('digraph {' + "\n")
                 MapaRuta.write('rankdir = LR;' + "\n")
                 lista="lista"+str(lis1)
-                reportegrafica.append(reporte(lista))
                 estado=1
             elif (estado==1):
                 if (obj.id.casefold()==";"):
@@ -805,7 +798,6 @@ def graficartabla() :
     global defectotablac
     global numerocolumna
     global listacolumna
-    global reportegrafica
     lis1=1 
     quotes='"'
     contador=0
@@ -821,8 +813,7 @@ def graficartabla() :
                 MapaRuta = open(r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".txt", 'w')
                 MapaRuta.write('digraph {' + "\n")
                 MapaRuta.write('rankdir = LR;' + "\n")
-                lista="tabla"+str(lis1)
-                reportegrafica.append(reporte(lista))
+                lista="lista"+str(lis1)
                 estado=1
             elif (estado==1):
                 if (obj.id.casefold()==";"):
@@ -891,47 +882,6 @@ def graficartabla() :
                     print("</tr>" + "\n")
                     MapaRuta.write("</tr>" + "\n")
                     estado=1
-def reporteg():
-    print("")
-    listale=[]
-    template = ""
-    quo='"'
-    i=""
-    contadorl=1
-    contadort=1
-    tabla=""
-    lista=""
-    for obj in reportegrafica:
-        tabla="tabla"+str(contadort)
-        lista="lista"+str(contadorl)
-        print()
-        if (obj.lexem.casefold()==tabla):
-            i=r"C:\Users\denni\OneDrive\Desktop\tabla"+str(contadort)+".svg"
-            template+= f"<img src='{i}' style='width:50%; height:50%'>"+" "
-            contadort=contadort+1
-        elif (obj.lexem.casefold()==lista):
-            i=r"C:\Users\denni\OneDrive\Desktop\lista"+str(contadorl)+".svg"
-            template+= f"<img src='{i}' style='width:50%; height:50%'>"+" "
-            contadorl=contadorl+1
-
-    html = """<!DOCTYPE html>
-        <html>
-        <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="utf-8">
-        <style>
-        </style>
-        <title></title>
-        </head>
-        <body> <h1 align="center">Reporte de Graficas</h1>"""+template+"""
-        </body>
-        </html>"""
-
-    print(html)
-    with open(r'C:\Users\denni\OneDrive\Desktop\reportegrafica.html', "w") as file:
-        file.write(html)
-    os.startfile(r'C:\Users\denni\OneDrive\Desktop\reportegrafica.html')
-
                          
 def opcion1():
     print("_______________________________________")
@@ -976,7 +926,6 @@ def main():
             print("_______________________________________")   
             graficarlista()
             graficartabla() 
-            reporteg()
             main()
         elif opcion == 3: # GRAFICAR ARCHIVO   <
             print("BYE")
