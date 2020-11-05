@@ -1,0 +1,22 @@
+tabla (3,'** Equipos **'){
+fila ('Equipo 1', 'Azul', '7') Azul2;
+fila ('Disponible') #;
+fila ('Equipo 3', 'Rojo') Rojo2;
+fila ('Equipo 4',#,'6')#;
+encabezados ('Equipo','Color Asignado','No. Integrantes') amarillo2;
+fila (#)#; //Tendrá los valores por defecto
+} defecto ('---') gris2;
+
+lista ('>>> Personas <<<',circulo,verdadero){
+nodo ('Luis') azul2 ;
+nodos (2, 'Persona') verde2;
+nodo (#) #; // Nodo con valores por defecto
+nodo ('Manuel') rojo2;
+} defecto ('Disponible') blanco;
+
+lista ('>>> Hola<<<',circulo,verdadero){
+nodo ('Luis') azul2 ;
+nodos (2, 'person') verde2;
+nodo (#) #; // Nodo con valores por defecto
+nodo ('Manuel') rojo2;
+} defecto ('Disponible') blanco;
