@@ -673,13 +673,13 @@ def graficarlista():
                                 MapaRuta.write(anterior+"->"+nombre+ "\n")
                                 anterior=nombre
                                 nombre=""
-                                anterior=""
                                 nombres=[]
                                 reversa=[]
                         MapaRuta.write('}')
                         MapaRuta.close()
                         os.system("dot -Tpdf "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".dot -o "r"C:\Users\denni\OneDrive\Desktop\lista"+str(lis1)+".pdf")
                         lis1=lis1+1
+                        anterior=""
                         estado=0
                 elif (obj.id.casefold()=="nombre"):
                     MapaRuta.write("label="+quotes+obj.lexem+quotes+";" + "\n")
@@ -807,7 +807,7 @@ def graficartabla() :
         for obj in listatabla:
             print(obj.lexem,obj.id)
             if (estado==0):
-                MapaRuta = open(r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".dot", 'w')
+                MapaRuta = open(r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".txt", 'w')
                 MapaRuta.write('digraph {' + "\n")
                 MapaRuta.write('rankdir = LR;' + "\n")
                 lista="lista"+str(lis1)
@@ -817,7 +817,7 @@ def graficartabla() :
                     MapaRuta.write("</table>>];" + "\n")
                     MapaRuta.write('}')
                     MapaRuta.close()
-                    os.system("dot -Tpdf "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".dot -o "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".pdf")
+                    os.system("dot -Tpdf "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".txt -o "r"C:\Users\denni\OneDrive\Desktop\tabla"+str(lis1)+".pdf")
                     lis1=lis1+1
                     estado=0
                 elif (obj.id.casefold()=="nombre"):
@@ -825,7 +825,7 @@ def graficartabla() :
                     MapaRuta.write("Foo [label=<" + "\n")
                     #bgcolor
                     
-                    MapaRuta.write("<\table border="+quotes+"0"+quotes+" cellborder="+quotes+"1"+quotes +" cellspacing="+quotes+"0"+quotes+">"+ "\n")
+                    MapaRuta.write("<table border="+quotes+"0"+quotes+" cellborder="+quotes+"1"+quotes +" cellspacing="+quotes+"0"+quotes+">"+ "\n")
                     
                     MapaRuta.write("<tr>" + "\n")
                     
@@ -846,24 +846,30 @@ def graficartabla() :
                 elif (obj.id.casefold()==")"):
                     if (contador==numerocolumna):
                         estado=22
+                        MapaRuta.write("<tr>" + "\n")
+                        print("<tr>" + "\n")
                         contador=0
                     else:
-                        while numerocolumna<=contador:
+                        while contador<numerocolumna:
                             listacolumna.append(columni(defectotabla))
                             contador=contador+1
                         contador=0
                         estado=22
-            elif (estado==22):
-                MapaRuta.write("<tr>" + "\n")
+                        MapaRuta.write("<tr>" + "\n")
+                        print("<tr>" + "\n")
+            elif (estado==22):            
                 if (obj.id.casefold()=="color"):
                     color=obj.lexem
                     for lk in listacolumna:
                         MapaRuta.write("<td  bgcolor="+quotes+color+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
+                        print("<td  bgcolor="+quotes+color+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
                     listacolumna=[]
                 elif (obj.id.casefold()=="#"):
                     for lk in listacolumna:
                         MapaRuta.write("<td  bgcolor="+quotes+defectotablac+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
+                        print("<td  bgcolor="+quotes+color+quotes+"><i>"+lk.lexem+"</i></td>" + "\n")
                 elif (obj.id.casefold()==";"):
+                    print("</tr>" + "\n")
                     MapaRuta.write("</tr>" + "\n")
                     estado=1
                          
